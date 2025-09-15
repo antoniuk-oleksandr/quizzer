@@ -5,6 +5,7 @@ import type { QuizzesRepository } from '../interface/quizzes.repository.interfac
 import { QUIZZES_REPOSITORY } from '../constants/quizzes.constants';
 import { QuizMapper } from '../mapper/quiz.mapper';
 import { QuizDto } from '../domain/dto/quiz.dto';
+import { QuizNotFoundException } from '../exception/quiz-not-found.exception';
 
 @Injectable()
 export class QuizzesServiceImpl implements QuizzesService {
@@ -13,6 +14,15 @@ export class QuizzesServiceImpl implements QuizzesService {
     private readonly quizzesRepository: QuizzesRepository,
     private readonly quizMapper: QuizMapper,
   ) {}
+
+  async getQuizById(id: number): Promise<QuizDto | null> {
+    const quiz = await this.quizzesRepository.findById(id);
+    if (!quiz) {
+      throw new QuizNotFoundException();
+    }
+
+    return this.quizMapper.toDto(quiz);
+  }
 
   async createQuiz(
     createQuizDto: CreateQuizDto,

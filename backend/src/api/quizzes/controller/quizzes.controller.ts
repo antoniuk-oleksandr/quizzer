@@ -1,4 +1,12 @@
-import { Body, Controller, Inject, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Inject,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import type { QuizzesService } from '../interface/quizzes.service.interface';
 import { QUIZZES_SERVICE } from '../constants/quizzes.constants';
 import { JwtAuthGuard } from 'src/api/auth/guard/jwt-auth.guard';
@@ -19,5 +27,10 @@ export class QuizzesController {
     @CurrentUser() user: { id: number },
   ) {
     return this.quizzesService.createQuiz(createQuizDto, user.id);
+  }
+
+  @Get(':id')
+  async getQuizById(@Param('id') id: number) {
+    return await this.quizzesService.getQuizById(id);
   }
 }
