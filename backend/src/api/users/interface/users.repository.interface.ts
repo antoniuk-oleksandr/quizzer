@@ -3,4 +3,5 @@ import { UserEntity } from '../domain/entity/user.entity';
 
 export interface UsersRepository {
   create(user: CreateUserDto): Promise<UserEntity>;
+  findByUsernameOrEmail(usernameOrEmail: string): Promise<UserEntity | null>;
 }

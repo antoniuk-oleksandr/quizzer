@@ -11,6 +11,8 @@ import {
 import type { PasswordService } from '../interface/password.service.interface';
 import { CreateUserDto } from 'src/api/users/domain/dto/create-user.dto';
 import type { JwtHelperService } from '../interface/jwt-helper.service.interface';
+import { LoginDto } from '../domain/dto/login.dto';
+import { InvalidCredentialsException } from '../exception/invalid-credentials.exception';
 
 @Injectable()
 export class AuthServiceImpl implements AuthService {
@@ -40,6 +42,26 @@ export class AuthServiceImpl implements AuthService {
       refreshToken: await this.jwtHelperService.signRefreshToken(
         createdUser.id,
       ),
+    };
+  }
+
+  async loginUser(loginDto: LoginDto): Promise<JwtDto> {
+    const user = await this.usersService.getUserByUsernameOrEmail(
+      loginDto.usernameOrEmail,
+    );
+
+    const isPasswordValid = await this.passwordService.compare(
+      loginDto.password,
+      user.password,
+    );
+
+    if (!isPasswordValid) {
+      throw new InvalidCredentialsException();
+    }
+
+    return {
+      accessToken: await this.jwtHelperService.signAccessToken(user.id),
+      refreshToken: await this.jwtHelperService.signRefreshToken(user.id),
     };
   }
 }

@@ -7,6 +7,13 @@ import { PrismaService } from 'src/prisma/service/prisma.service';
 @Injectable()
 export class UsersRepositoryImpl implements UsersRepository {
   constructor(private readonly prismaService: PrismaService) {}
+  findByUsernameOrEmail(usernameOrEmail: string): Promise<UserEntity | null> {
+    return this.prismaService.user.findFirst({
+      where: {
+        OR: [{ username: usernameOrEmail }, { email: usernameOrEmail }],
+      },
+    });
+  }
 
   async create(user: CreateUserDto): Promise<UserEntity> {
     return await this.prismaService.user.create({
