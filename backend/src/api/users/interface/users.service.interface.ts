@@ -3,4 +3,5 @@ import { UserEntity } from '../domain/entity/user.entity';
 
 export interface UsersService {
   createUser(user: CreateUserDto): Promise<UserEntity>;
+  getUserByUsernameOrEmail(usernameOrEmail: string): Promise<UserEntity>;
 }

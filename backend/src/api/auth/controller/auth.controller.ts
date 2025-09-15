@@ -3,6 +3,7 @@ import type { AuthService } from '../interface/auth.service.interface';
 import { AUTH_SERVICE } from '../constants/auth.constants';
 import { RegisterDto } from '../domain/dto/register.dto';
 import { JwtDto } from '../domain/dto/jwt.dto';
+import { LoginDto } from '../domain/dto/login.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -11,8 +12,13 @@ export class AuthController {
     private readonly authService: AuthService,
   ) {}
 
-  @Post('session')
+  @Post('users')
   async registerUser(@Body() registerDto: RegisterDto): Promise<JwtDto> {
     return await this.authService.registerUser(registerDto);
+  }
+
+  @Post('sessions')
+  async loginUser(@Body() loginDto: LoginDto): Promise<JwtDto> {
+    return await this.authService.loginUser(loginDto);
   }
 }
