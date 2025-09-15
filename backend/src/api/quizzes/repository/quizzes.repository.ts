@@ -4,6 +4,7 @@ import { CreateQuizDto } from '../domain/dto/create-quiz.dto';
 import { QuizEntity } from '../domain/entity/quiz.entity';
 import { PrismaService } from 'src/prisma/service/prisma.service';
 import { QuizMapper } from '../mapper/quiz.mapper';
+import { RawQuizSummaryDto } from '../domain/dto/raw-quiz-summary.dto';
 
 @Injectable()
 export class QuizzesRepositoryImpl implements QuizzesRepository {
@@ -11,6 +12,12 @@ export class QuizzesRepositoryImpl implements QuizzesRepository {
     private readonly prismaService: PrismaService,
     private readonly quizMapper: QuizMapper,
   ) {}
+
+  async delete(id: number, userId: number): Promise<void> {
+    await this.prismaService.quiz.delete({
+      where: { id, userId },
+    });
+  }
 
   async findById(id: number): Promise<QuizEntity | null> {
     const quiz = await this.prismaService.quiz.findUnique({
@@ -75,5 +82,17 @@ export class QuizzesRepositoryImpl implements QuizzesRepository {
         },
       },
     })) as unknown as QuizEntity;
+  }
+
+  async findAll(): Promise<RawQuizSummaryDto[]> {
+    return await this.prismaService.quiz.findMany({
+      select: {
+        id: true,
+        title: true,
+        _count: {
+          select: { questions: true },
+        },
+      },
+    });
   }
 }

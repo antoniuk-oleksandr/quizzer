@@ -1,10 +1,20 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
-import { QuizDto } from '../domain/dto/quiz.dto';
-import { QuizEntity } from '../domain/entity/quiz.entity';
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import { QuizSummaryDto } from '../domain/dto/quiz-summary.dto';
+import { QuizDto } from '../domain/dto/quiz.dto';
+import { RawQuizSummaryDto } from '../domain/dto/raw-quiz-summary.dto';
+import { QuizEntity } from '../domain/entity/quiz.entity';
 
 export class QuizMapper {
+  toSummary(raw: RawQuizSummaryDto[]): QuizSummaryDto[] {
+    return raw.map((r) => ({
+      id: r.id,
+      title: r.title,
+      questionsCount: r._count.questions,
+    }));
+  }
+
   toDto(quiz: QuizEntity): QuizDto {
     return {
       ...quiz,
@@ -14,7 +24,6 @@ export class QuizMapper {
         ...q,
         correctAnswers: q.correctAnswers.map((ca) => ({
           id: ca.id,
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           text: ca.text,
         })),
       })),
