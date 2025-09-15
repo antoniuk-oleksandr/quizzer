@@ -15,6 +15,7 @@ import { PasswordServiceImpl } from '../service/password.service';
 import { JwtHelperServiceImpl } from '../service/jwt-helper.service';
 import bcrypt from 'bcryptjs';
 import { PrismaModule } from 'src/prisma/module/prisma.module';
+import { JwtStrategy } from '../strategy/jwt.strategy';
 
 @Module({
   controllers: [AuthController],
@@ -31,6 +32,7 @@ import { PrismaModule } from 'src/prisma/module/prisma.module';
     }),
   ],
   providers: [
+    JwtStrategy,
     {
       provide: AUTH_SERVICE,
       useClass: AuthServiceImpl,

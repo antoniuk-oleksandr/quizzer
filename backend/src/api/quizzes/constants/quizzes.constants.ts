@@ -1,0 +1,2 @@
+export const QUIZZES_REPOSITORY = Symbol('QUIZZES_REPOSITORY');
+export const QUIZZES_SERVICE = Symbol('QUIZZES_SERVICE');
