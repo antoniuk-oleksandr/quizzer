@@ -47,17 +47,19 @@ model Question {
 }
 
 model Option {
-  id         Int      @id @default(autoincrement())
-  text       String
-  question   Question @relation(fields: [questionId], references: [id])
-  questionId Int
+  id            Int             @id @default(autoincrement())
+  text          String
+  question      Question        @relation(fields: [questionId], references: [id])
+  questionId    Int
+  CorrectAnswer CorrectAnswer[]
 
   @@map("options")
 }
 
 model CorrectAnswer {
   id         Int      @id @default(autoincrement())
-  text       String
+  option     Option   @relation(fields: [optionId], references: [id])
+  optionId   Int
   question   Question @relation(fields: [questionId], references: [id])
   questionId Int
 
@@ -68,4 +70,5 @@ enum QuestionType {
   BOOLEAN
   INPUT
   CHECKBOX
+  SINGLE
 }
