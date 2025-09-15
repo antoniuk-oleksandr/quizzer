@@ -1,7 +1,7 @@
 services:
   quizzer-db:
     image: postgres:17
-    container_name: e-commerce-db
+    container_name: quizzer-db
     restart: unless-stopped
     ports:
       - "${POSTGRES_PORT}:5432"
