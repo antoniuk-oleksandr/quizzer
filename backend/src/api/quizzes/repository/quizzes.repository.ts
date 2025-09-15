@@ -3,10 +3,34 @@ import { QuizzesRepository } from '../interface/quizzes.repository.interface';
 import { CreateQuizDto } from '../domain/dto/create-quiz.dto';
 import { QuizEntity } from '../domain/entity/quiz.entity';
 import { PrismaService } from 'src/prisma/service/prisma.service';
+import { QuizMapper } from '../mapper/quiz.mapper';
 
 @Injectable()
 export class QuizzesRepositoryImpl implements QuizzesRepository {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly quizMapper: QuizMapper,
+  ) {}
+
+  async findById(id: number): Promise<QuizEntity | null> {
+    const quiz = await this.prismaService.quiz.findUnique({
+      where: { id },
+      include: {
+        questions: {
+          include: {
+            options: true,
+            correctAnswers: {
+              include: {
+                option: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return quiz ? this.quizMapper.toEntity(quiz) : null;
+  }
 
   async create(
     createQuizDto: CreateQuizDto,
@@ -28,12 +52,10 @@ export class QuizzesRepositoryImpl implements QuizzesRepository {
               options: { create: options },
               correctAnswers: {
                 create: question.correctAnswers.map((answer) => {
-                  // find the corresponding option id
                   const optionIndex = question.options.findIndex(
                     (opt) => opt.text === answer.text,
                   );
                   return { option: { connect: { id: optionIndex + 1 } } };
-                  // +1 because Prisma auto-increment IDs start at 1
                 }),
               },
             };
@@ -46,24 +68,12 @@ export class QuizzesRepositoryImpl implements QuizzesRepository {
             options: true,
             correctAnswers: {
               include: {
-                option: true, // include option to return text
+                option: true,
               },
             },
           },
         },
       },
     })) as unknown as QuizEntity;
-
-    // Map correctAnswers to include option text
-    // const quizWithOptionText = {
-    //   ...createdQuiz,
-    //   questions: createdQuiz.questions.map((q) => ({
-    //     ...q,
-    //     correctAnswers: q.correctAnswers.map((ca) => ({
-    //       id: ca.id,
-    //       text: ca.option.text, // return option text
-    //     })),
-    //   })),
-    // };
   }
 }

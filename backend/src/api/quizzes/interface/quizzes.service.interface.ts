@@ -3,4 +3,5 @@ import { QuizDto } from '../domain/dto/quiz.dto';
 
 export interface QuizzesService {
   createQuiz(createQuizDto: CreateQuizDto, userId: number): Promise<QuizDto>;
+  getQuizById(id: number): Promise<QuizDto | null>;
 }
