@@ -1,7 +1,10 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Inject,
   Param,
   Post,
@@ -20,6 +23,11 @@ export class QuizzesController {
     private readonly quizzesService: QuizzesService,
   ) {}
 
+  @Get()
+  async getAllQuizzes() {
+    return await this.quizzesService.getAllQuizzes();
+  }
+
   @UseGuards(JwtAuthGuard)
   @Post()
   async createQuiz(
@@ -32,5 +40,15 @@ export class QuizzesController {
   @Get(':id')
   async getQuizById(@Param('id') id: number) {
     return await this.quizzesService.getQuizById(id);
+  }
+
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Delete(':id')
+  @UseGuards(JwtAuthGuard)
+  async deleteQuiz(
+    @Param('id') id: number,
+    @CurrentUser() user: { id: number },
+  ) {
+    return await this.quizzesService.deleteQuiz(id, user.id);
   }
 }

@@ -36,7 +36,7 @@ model Question {
   id             Int             @id @default(autoincrement())
   text           String
   type           QuestionType
-  quiz           Quiz            @relation(fields: [quizId], references: [id])
+  quiz           Quiz            @relation(fields: [quizId], references: [id], onDelete: Cascade)
   quizId         Int
   options        Option[]
   correctAnswers CorrectAnswer[]
@@ -49,7 +49,7 @@ model Question {
 model Option {
   id            Int             @id @default(autoincrement())
   text          String
-  question      Question        @relation(fields: [questionId], references: [id])
+  question      Question        @relation(fields: [questionId], references: [id], onDelete: Cascade)
   questionId    Int
   CorrectAnswer CorrectAnswer[]
 
@@ -58,9 +58,9 @@ model Option {
 
 model CorrectAnswer {
   id         Int      @id @default(autoincrement())
-  option     Option   @relation(fields: [optionId], references: [id])
+  option     Option   @relation(fields: [optionId], references: [id], onDelete: Cascade)
   optionId   Int
-  question   Question @relation(fields: [questionId], references: [id])
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
   questionId Int
 
   @@map("correct_answers")
