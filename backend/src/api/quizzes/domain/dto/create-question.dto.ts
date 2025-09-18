@@ -18,7 +18,6 @@ export class CreateQuestionDto {
   type: QuestionType;
 
   @IsArray()
-  @ArrayMinSize(1)
   @ValidateNested({ each: true })
   @Type(() => CreateOptionDto)
   options: CreateOptionDto[];
