@@ -1,8 +1,6 @@
 import axios, { AxiosRequestConfig, Method } from "axios";
 import { jwtDecode } from "jwt-decode";
 import { tokenStore } from "./token-store";
-import { useToastStore } from "@/components/Toast/toast-store";
-import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 interface JwtPayload {
   exp: number;
@@ -15,7 +13,7 @@ interface RequestParams {
   body?: any;
 }
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "/api";
+const API_BASE_URL = "http://localhost:8080/api/v1"
 
 function getToken(useToken: boolean): string | null {
   const { token: storeToken, setToken } = tokenStore.getState();
