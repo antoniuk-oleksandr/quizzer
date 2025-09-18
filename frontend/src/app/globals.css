@@ -1,1 +1,6 @@
 @import "tailwindcss";
+
+@theme {
+    --h-app: calc(100svh - 1.5rem);
+    --font-sans: var(--font-inter), sans-serif;
+}
